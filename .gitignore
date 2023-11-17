@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+certskeys/
+
+appMolina/certskeys/
+
 # C extensions
 *.so
 
@@ -127,6 +131,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+*.key
 
 # Spyder project settings
 .spyderproject
