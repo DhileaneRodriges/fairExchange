@@ -1,8 +1,9 @@
 import argparse
 import os
 import time
-from module.server_module import Module
-from alice.utils.settings.module_setting import ModuleSettings
+from module.ServerModule import Module
+from alice.utils.settings.ConfigModule import ConfigAliceModule
+from bob.utils.settings.module_setting import ModuleSettings
 
 if __name__ == '__main__':
    while True:
@@ -14,8 +15,9 @@ if __name__ == '__main__':
       x = int(input())
       if x == 1:
          print("1 - Alice start your module")
-         settingsModuleAlice = ModuleSettings()
-         moduleAlice = Module(settingsModuleAlice)
+         settingsModuleAlice = ConfigAliceModule()
+         moduleAlice = Module(settingsModuleAlice).run()
+
 
          time.sleep(2)
          print("2- Alice send a request to module to encript document")
