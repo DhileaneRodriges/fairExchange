@@ -32,7 +32,7 @@ compile and run :  cm770@morello-camb-3: $ python3 att_recv_alicedoc.py
                 :
                 :  cm770@morello-camb-3: $ python3 att_recv_alicedoc.py 
                 :
-                : Optionally the run_att_recv_alicedoc.py testing
+                : Optionally the test_att_recv_alicedoc.py testing
                 : program can be used to test the main class:
                 : SSLfileserver
                 :

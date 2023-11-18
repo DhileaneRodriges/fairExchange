@@ -10,7 +10,7 @@ class Module():
   def __init__(self, config):
 
     self.config = config
-    print("\nServer running Alice's attestable ... Its PEM pass phrase is: camb\n")
+    print("\nServer running "+self.config.CLIENT_NAME+"'s attestable ... Its PEM pass phrase is: camb\n")
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(certfile=self.config.SERVER_CERT_CHAIN, keyfile=self.config.SERVER_KEY)
 
@@ -25,7 +25,7 @@ class Module():
     wr_list = []  # empty list
     er_list = []  # empty list
 
-    print("Server has been started inside Alice's attestable running on host: ", self.server_name)
+    print("Server has been started inside "+self.config.CLIENT_NAME+"'s attestable running on host: ", self.server_name)
     print("It is listening on port {0}...".format(self.local_port))
 
     server_socket_open = "YES"

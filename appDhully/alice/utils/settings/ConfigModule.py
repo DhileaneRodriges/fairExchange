@@ -3,16 +3,16 @@ from pathlib import Path
 
 class ConfigAliceModule:
   def __init__(self):
-
-
+    self.SERVER_NAME = "localhost"
+    self.LOCAL_PORT = 8290
+    self.CLIENT_NAME = "Alice"
     self.parser = argparse.ArgumentParser(description="Alice's server running inside Alice's attestable")
-    self.parser.add_argument("-s", "--server_name", help="localhost", default="localhost")
-    self.parser.add_argument("-p", "--port_number", help="port used by server", default="8290")
+    self.parser.add_argument("-s", "--server_name", help="localhost", default=self.SERVER_NAME)
+    self.parser.add_argument("-p", "--port_number", help="port used by server", default=self.LOCAL_PORT)
     self.parser.add_argument("-f", "--file_to_send", help="file to send to client", default="alicedoc_encrypted.txt")
 
     # self.LOCAL_HOST = 'localhost'
-    self.SERVER_NAME = "localhost"
-    self.LOCAL_PORT = 8290
+
     self.RESOURCE_DIRECTORY = Path(__file__).resolve().parent.parent.parent.parent.parent / 'certskeys' / 'server'
     self.SERVER_CERT_CHAIN = self.RESOURCE_DIRECTORY / 'attAlice.intermediate.chain.pem'
     self.SERVER_KEY = self.RESOURCE_DIRECTORY / 'attAlice.key.pem'
