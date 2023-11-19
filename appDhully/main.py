@@ -3,7 +3,9 @@ import os
 import time
 from module.ServerModule import Module
 from alice.utils.settings.ConfigModule import ConfigAliceModule
+import threading
 from bob.utils.settings.module_setting import ModuleSettings
+
 
 if __name__ == '__main__':
    while True:
@@ -16,21 +18,17 @@ if __name__ == '__main__':
       x = int(input())
 
       if x == 1:
-         print("1 - Alice start your Attestable")
-         settingsModuleAlice = ConfigAliceModule()  # Uma instância da classe ConfigAliceModule atribuída a variável settingsModuleAlice
-
-         # A classe ConfigAliceModule é responsável por configurar ou fornecer configurações específicas para o módulo Alice.
-
-         moduleAlice = Module(settingsModuleAlice)  # Nesta linha, o móduloAlice está sendo instanciado com as configurações fornecidas pela instância de ConfigAliceModule (settingsModuleAlice).
-
-         # A instância do módulo é então executada usando o método run().
-         print("start o modulo")
+         print("------Begin process encryption Alice`s document-----")
+         print(" --> 1 - Alice start your Attestable")
+         settingsModuleAlice = ConfigAliceModule()
+         moduleAlice = Module(settingsModuleAlice)
          time.sleep(2)
-         print("2- Alice sends a request to Attestable to encrypt document")
+         print(" --> 2 - Alice sends a request to Attestable to encrypt document")
          time.sleep(2)
-         print("3 - Response Attestable with document encrypted")
+         print(" --> 3 - Response Attestable with document encrypted")
          time.sleep(2)
-         print("------Finish process encriptacion-----")
+
+         print("------Finish process encryption Alice`s document-----")
          time.sleep(3)
       elif 2 == x:
          print("Attestable bob init and listen requeste")
