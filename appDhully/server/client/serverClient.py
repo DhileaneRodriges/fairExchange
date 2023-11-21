@@ -12,30 +12,30 @@ class SSLclientfile():
 
  def __init__(self, configClient):
 
+     self.configClient = configClient
      config = configClient.configServers
      self.clientname = config.client_name
-     self.server = config.server
-     self.port = config.port
-     self.headersize = 10
+     self.server = config.server_name
+     self.port = config.local_port
+     self.headersize = config.headersize
      self.soc = None
      self.conn = None
-     print("\n", self.clientname, " wants to run... Its PEM pass phrase is: camb\n")
 
- def sockconnect(self, ser="localhost", port=8080):
-     self.server= ser
-     self.port= port
+ def sockconnect(self):
+     self.server= self.server
+     self.port= self.port
 
      self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
      # Create a standard TCP Socket
      # Create SSL context which holds the parameters for any sessions
      context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-     context.load_verify_locations(CA_CERT)
-     context.load_cert_chain(certfile=CLIENT_CERT_CHAIN, keyfile=CLIENT_KEY)
+     context.load_verify_locations(self.configClient.configServers.config_client.ca_cert)
+     context.load_cert_chain(certfile=self.configClient.configServers.config_client.client_cert_chain, keyfile=self.configClient.configServers.config_client.client_key, password="camb")
 
 
      # We can wrap in an SSL context first, then connect
-     self.conn= context.wrap_socket(self.soc, server_hostname="attestable alice CAMB")
+     self.conn= context.wrap_socket(self.soc, server_hostname="attestable "+ self.configClient.configServers.client_name+" CAMB")
 
      ## OK 27Jul2023 return(self.conn.connect((ser, port)))
      return(self.conn.connect((self.server, self.port)))
@@ -43,7 +43,7 @@ class SSLclientfile():
 
 
 
- def send_recv_file(self, fname): 
+ def send_recv_file(self):
      conn=self.conn
      try:
         # This method uses the already connected conn socket 
@@ -73,15 +73,15 @@ class SSLclientfile():
 
         #####  client will receive file from server #####
         print("cli_file_flie.py now waiting from string from ser_file_file.py")
-        received= conn.recv(BUFFER_SIZE).decode()
-        filename, filesize= received.split(SEPARATOR)
+        received= conn.recv(self.configClient.configServers.config_client.buffer_size).decode()
+        filename, filesize= received.split(self.configClient.configServers.separator)
         # remove filename path if any
         filename= os.path.basename(filename)
-        filename= RECV_FILE_NAME_PREFIX + filename
+        filename= self.configClient.configServers.recv_file_name_prefix + filename
         filesize= int(filesize)
         # start receiving the file from the socket
         # and writing to the file stream
-        recv_store_file(filename, filesize, BUFFER_SIZE, conn)
+        recv_store_file(filename, filesize, self.configClient.configServers.buffer_size, conn)
         print("cli_file_flie.py has received file from ser_file_file.py")
 
      finally:

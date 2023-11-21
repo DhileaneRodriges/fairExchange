@@ -11,7 +11,7 @@ class ClientHandler:
 
     self.conn = conn
     self.conf = conf
-    self.ser_fileName = self.conf.ser_fileName
+    self.ser_fileName = self.conf.config_server.server_file
     print("\n\n\n...........ser_fileName:", self.ser_fileName)
 
   def start(self):

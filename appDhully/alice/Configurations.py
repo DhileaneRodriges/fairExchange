@@ -14,6 +14,8 @@ class ConfigsAlice:
     separator = "<SEPARATOR>"
     recv_file_name_prefix = ""
     headersize = 10
+    server_file = "alicedoc_encrypted.txt"
+    cliente_file = "helloServer.txt"
 
     resource_directory = Path(__file__).resolve().parent.parent.parent / 'certskeys' / 'server'
     server_cert_chain = resource_directory / 'attAlice.intermediate.chain.pem'
@@ -22,15 +24,22 @@ class ConfigsAlice:
     parserServer = argparse.ArgumentParser(description="Alice's server running inside Alice's attestable")
     parserServer.add_argument("-s", "--server_name", help="localhost", default=server_name)
     parserServer.add_argument("-p", "--port_number", help="port used by server", default=local_port)
-    parserServer.add_argument("-f", "--file_to_send", help="file to send to client", default="alicedoc_encrypted.txt")
+    parserServer.add_argument("-f", "--file_to_send", help="file to send to client", default=server_file)
 
-    configServerModule = ConfigServerModule( resource_directory, server_cert_chain, server_key, parserServer)
+    configServerModule = ConfigServerModule( resource_directory, server_cert_chain, server_key, parserServer, server_file)
 
     resource_directory_client = Path(__file__).resolve().parent.parent.parent / 'certskeys' / 'client'
     client_cert_chain = resource_directory_client / 'aliceClient.intermediate.chain.pem'
     client_key = resource_directory_client / 'aliceClient.key.pem'
     ca_cert = resource_directory_client / 'rootca.cert.pem'
 
-    configClientModule = ConfigClientModule( resource_directory_client, client_cert_chain, client_key, ca_cert)
+    clientParser = argparse.ArgumentParser(description="Alice app acting as a client")
+    clientParser.add_argument("-s", "--server", help="Host where Alice's attestablei run, default is localhost",
+                        default=server_name)
+    clientParser.add_argument("-p", "--port", help="Server port, default is ", default=local_port)
+    clientParser.add_argument("-f", "--file", help="File to send to server, default is helloServer.txt",
+                        default=cliente_file)
+
+    configClientModule = ConfigClientModule( resource_directory_client, client_cert_chain, client_key, ca_cert, clientParser, cliente_file)
 
     self.configServers = ConfigServers(server_name, local_port, client_name, separator, buffer_size, headersize, recv_file_name_prefix, configServerModule, configClientModule);

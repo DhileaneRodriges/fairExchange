@@ -24,6 +24,8 @@ if __name__ == '__main__':
          time.sleep(2)
 
          sslclientfile = SSLclientfile(settingsModuleAlice)
+         sslclientfile.sockconnect()
+         sslclientfile.send_recv_file()
          print(" --> 2 - Alice sends a request to Attestable to encrypt document")
 
          time.sleep(2)

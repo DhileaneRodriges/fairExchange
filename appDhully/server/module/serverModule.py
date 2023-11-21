@@ -40,10 +40,11 @@ def accep_conection(self):
       if s is self.server_socket:
         client_socket, address = self.server_socket.accept()
         try:
-          # Wrap the socket in an SSL connection (will perform a handshake)
+
           conn = self.context.wrap_socket(client_socket, server_side=True)
-          # start the thread in a new thread
-          self.handle_connection, (conn, self.config)
+          ClientHandler(conn, self.config).start()
+          self.server_socket.close()  # close the server socket or hang
+          server_socket_open = "NO"  # close and loop again: produces
         except ssl.SSLError as e:
           print(e)
 
