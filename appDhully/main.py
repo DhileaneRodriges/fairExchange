@@ -1,11 +1,8 @@
-import argparse
 import os
 import time
-from module.ServerModule import Module
-from alice.utils.settings.ConfigModule import ConfigAliceModule
-import threading
-from bob.utils.settings.module_setting import ModuleSettings
-
+from appDhully.server.module.serverModule import Module
+from appDhully.server.client.serverClient import SSLclientfile
+from appDhully.alice.Configurations import ConfigsAlice
 
 if __name__ == '__main__':
    while True:
@@ -19,11 +16,16 @@ if __name__ == '__main__':
 
       if x == 1:
          print("------Begin process encryption Alice`s document-----")
-         print(" --> 1 - Alice start your Attestable")
-         settingsModuleAlice = ConfigAliceModule()
+         settingsModuleAlice = ConfigsAlice()
+
          moduleAlice = Module(settingsModuleAlice)
+         print(" --> 1 - Alice start your Attestable")
+
          time.sleep(2)
+
+         sslclientfile = SSLclientfile(settingsModuleAlice)
          print(" --> 2 - Alice sends a request to Attestable to encrypt document")
+
          time.sleep(2)
          print(" --> 3 - Response Attestable with document encrypted")
          time.sleep(2)

@@ -3,19 +3,19 @@ import socket
 import ssl
 import threading
 import select
-from appDhully.module.client_handler import ClientHandler
+from appDhully.server.client_handler import ClientHandler
 
 
 class Module():
-  def __init__(self, config):
+  def __init__(self, configurations):
 
-    self.config = config
+    self.config = configurations.configServers
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(certfile=self.config.SERVER_CERT_CHAIN, keyfile=self.config.SERVER_KEY, password="camb")
+    context.load_cert_chain(certfile=configurations.configServers.config_server.server_cert_chain, keyfile=configurations.configServers.config_server.server_key, password="camb")
 
     self.context = context
-    self.server_name = self.config.SERVER_NAME
-    self.local_port = self.config.LOCAL_PORT
+    self.server_name = configurations.configServers.server_name
+    self.local_port = configurations.configServers.local_port
 
     self.server_socket = socket.socket()
     self.server_socket.bind((self.server_name, self.local_port))
@@ -24,12 +24,13 @@ class Module():
     self.wr_list = []  # empty list
     self.er_list = []  # empty list
 
-    print("Server has been started inside "+self.config.CLIENT_NAME+"'s attestable running on host: ", self.server_name)
-    print("It is listening on port {0}...".format(self.local_port))
     # Cria uma thread para aceitar conexões
     aceitar_thread = threading.Thread(target=accep_conection, args=(self,))
     aceitar_thread.start()
-    print(aceitar_thread.name)
+    print("  Server has been started inside " + self.config.client_name + "'s attestable running on host: ", self.server_name)
+    print("  It is listening on port {0}...".format(self.local_port))
+
+    print("  " + aceitar_thread.name)
 
 def accep_conection(self):
   server_socket_open = "YES"

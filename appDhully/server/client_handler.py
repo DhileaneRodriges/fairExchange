@@ -1,4 +1,4 @@
-from appDhully.module.files2sockets import read_send_file, recv_store_file
+from appDhully.server.files2sockets import read_send_file
 import os
 
 class ClientHandler:
