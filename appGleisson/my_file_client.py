@@ -1,13 +1,22 @@
-# file_client.py
+# my_file_client.py
+import os
 import socket
 import ssl
+from pathlib import Path
+
 
 from file_common import FileCommon
 
 class FileClient(FileCommon):
     def run_client(self, file_path):
+        context = ssl.SSLContext()
+        RESOURCE_DIRECTORY = Path(__file__).resolve().parent.parent / 'certskeys' / 'client'
+        CLIENT_CERT_CHAIN = RESOURCE_DIRECTORY / 'aliceClient.intermediate.chain.pem'
+        CLIENT_KEY = RESOURCE_DIRECTORY / 'aliceClient.key.pem'
+
+        context.load_cert_chain(certfile=CLIENT_CERT_CHAIN, keyfile=CLIENT_KEY)
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        ssl_socket = ssl.wrap_socket(client_socket, cert_reqs=ssl.CERT_NONE, ssl_version=ssl.PROTOCOL_TLS)
+        ssl_socket = context.wrap_socket(client_socket)
 
         try:
             ssl_socket.connect(("localhost", 8080))

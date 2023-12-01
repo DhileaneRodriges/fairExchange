@@ -14,6 +14,7 @@ class ConfigsAlice:
     separator = "<SEPARATOR>"
     recv_file_name_prefix = ""
     headersize = 10
+    path_file = Path(__file__).resolve().parent / "files"
     server_file = "alicedoc_encrypted.txt"
     cliente_file = "helloServer.txt"
 
@@ -42,4 +43,4 @@ class ConfigsAlice:
 
     configClientModule = ConfigClientModule( resource_directory_client, client_cert_chain, client_key, ca_cert, clientParser, cliente_file)
 
-    self.configServers = ConfigServers(server_name, local_port, client_name, separator, buffer_size, headersize, recv_file_name_prefix, configServerModule, configClientModule);
+    self.configServers = ConfigServers(server_name, local_port, client_name, path_file, separator, buffer_size, headersize, recv_file_name_prefix, configServerModule, configClientModule);

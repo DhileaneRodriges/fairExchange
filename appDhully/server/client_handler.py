@@ -1,3 +1,5 @@
+import ssl
+
 from appDhully.server.files2sockets import read_send_file
 import os
 
@@ -44,10 +46,11 @@ class ClientHandler:
       ########## server will send file to client ########
       # experimenting with marco.txt file stored on current subdir
       filename = self.ser_fileName
-      filesize = os.path.getsize(filename)
+      file_path = self.config.path_file
+      filesize = os.path.getsize(file_path/ filename) #TODO tratar erro
       # In python sockets send and receive strings. Send a string
       self.conn.send(f"{filename}{self.conf.EPARATOR}{filesize}".encode())
-      read_send_file(filename, filesize, BUFFER_SIZE, self.conn)
+      read_send_file(filename, filesize, self.conf, self.conn)
       print("ser_file_file.py has sent a file to cli_file)flie.py")
 
       # print("ser_str.py will now send a string to cli_str.py")

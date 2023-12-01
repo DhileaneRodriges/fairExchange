@@ -73,8 +73,8 @@ class SSLclientfile():
 
         #####  client will receive file from server #####
         print("cli_file_flie.py now waiting from string from ser_file_file.py")
-        received= conn.recv(self.configClient.configServers.config_client.buffer_size).decode()
-        filename, filesize= received.split(self.configClient.configServers.separator)
+        received = conn.recv(self.configClient.configServers.buffer_size).decode()
+        filename, filesize = received.split(self.configClient.configServers.separator)
         # remove filename path if any
         filename= os.path.basename(filename)
         filename= self.configClient.configServers.recv_file_name_prefix + filename

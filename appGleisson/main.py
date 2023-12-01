@@ -2,7 +2,9 @@
 import threading
 
 from file_server import FileServer
-from file_client import FileClient
+from my_file_client import FileClient
+from pathlib import Path
+
 
 def main():
     encryption_key = b'your-secret-key'  # Substitua por uma chave secreta forte
@@ -14,12 +16,12 @@ def main():
     server_thread = threading.Thread(target=file_server.run_server)
     server_thread.start()
 
-    # Espera um pouco para garantir que o servidor seja iniciado antes do cliente
+    # Espera um poucoa para garantir que o servidor seja iniciado antes do cliente
     import time
     time.sleep(1)
 
     # Executa o cliente
-    file_path = "caminho/do/seu/arquivo.txt"  # Substitua pelo caminho do seu arquivo
+    file_path = Path(__file__).resolve().parent / "helloClient.txt"  # Substitua pelo caminho do seu arquivo
     file_client.run_client(file_path)
 
 if __name__ == "__main__":

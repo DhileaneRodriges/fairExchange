@@ -1,17 +1,16 @@
-# file_server.py
 import socket
 import ssl
 import threading
 from pathlib import Path
-
-
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from file_common import FileCommon
 
 class FileServer(FileCommon):
     def __init__(self, encryption_key):
         super().__init__()
         self.encryption_key = encryption_key
-        self.server_cert = Path(__file__).resolve().parent.parent / 'certskeys' / 'server' / 'attAlice.intermediate.chain.pem'
+        self.certskeys = Path(__file__).resolve().parent.parent / 'certskeys' / 'server'
 
     def handle_client(self, conn):
         try:
@@ -40,7 +39,16 @@ class FileServer(FileCommon):
 
         while True:
             client_socket, addr = server_socket.accept()
-            ssl_socket = ssl.wrap_socket(client_socket, server_side=True, certfile="server.crt",  ssl_version=ssl.PROTOCOL_TLS)
+
+            # Cria um contexto SSL
+            context = ssl.SSLContext()
+
+            SERVER_CERT_CHAIN = self.certskeys / 'bobServer.intermediate.chain.pem'
+            SERVER_KEY = self.certskeys / 'bobServer.key.pem'
+
+            context.load_cert_chain(certfile=SERVER_CERT_CHAIN, keyfile=SERVER_KEY)
+            # Envolve o socket do cliente com SSL
+            ssl_socket = context.wrap_socket(client_socket)
 
             # Inicia uma thread para lidar com o cliente
             client_thread = threading.Thread(target=self.handle_client, args=(ssl_socket,))
