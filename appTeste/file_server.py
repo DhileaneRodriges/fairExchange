@@ -41,7 +41,8 @@ class FileServer(FileCommon):
             client_socket, addr = server_socket.accept()
 
             # Cria um contexto SSL
-            context = ssl.SSLContext()
+            #context = ssl.SSLContext()
+            context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
 
             SERVER_CERT_CHAIN = self.certskeys / 'bobServer.intermediate.chain.pem'
             SERVER_KEY = self.certskeys / 'bobServer.key.pem'
