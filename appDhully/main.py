@@ -33,19 +33,19 @@ def process_encryption(name, configurations):
    if configurations:
       module = Module(configurations)
       print(f" --> 1 - {name} start your Attestable")
-      time.sleep(2)
+      time.sleep(5)
 
       ssl_client_file = SSLclientfile(configurations)
       ssl_client_file.sockconnect()
       ssl_client_file.send_recv_file()
       print(f" --> 2 - {name} sends a request to Attestable to encrypt document")
 
-      time.sleep(2)
+      time.sleep(5)
       print(" --> 3 - Response Attestable with document encrypted")
-      time.sleep(2)
+      time.sleep(5)
 
    print(f"------Finish process encryption {name}'s document-----")
-   time.sleep(3)
+   time.sleep(6)
 
 
 def open_notepad():
