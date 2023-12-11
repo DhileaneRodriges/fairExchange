@@ -1,7 +1,7 @@
 import os
 import time
 from appDhully.server.module.serverModule import Module
-from appDhully.server.client.serverClient import SSLclientfile
+from appDhully.server.client.serverClient import SSLClientFile
 from appDhully.alice.Configurations import ConfigsAlice
 
 
@@ -35,9 +35,9 @@ def process_encryption(name, configurations):
       print(f" --> 1 - {name} start your Attestable")
       time.sleep(5)
 
-      ssl_client_file = SSLclientfile(configurations)
-      ssl_client_file.sockconnect()
-      ssl_client_file.send_recv_file()
+      ssl_client_file = SSLClientFile(configurations)
+      ssl_client_file.sock_connect()
+      ssl_client_file.send_recv_file(configurations.configServers.config_client.cliente_file)
       print(f" --> 2 - {name} sends a request to Attestable to encrypt document")
 
       time.sleep(5)
