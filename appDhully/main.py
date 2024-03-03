@@ -1,7 +1,7 @@
 import os
 import time
-from appDhully.server.server.serverModule import Module
-from appDhully.server.client.serverClient import SSLClientFile
+from appDhully.server.initServer import Server
+from appDhully.client.serverClient import SSLClientFile
 from appDhully.alice.Configurations import ConfigsAlice
 from appDhully.bob.Configurations import ConfigsBob
 
@@ -35,7 +35,7 @@ def process_encryption(configurations):
    print(f"------Begin process encryption {configurations.configServers.client_name}'s document-----")
 
    if configurations:
-      module = Module(configurations)
+      module = Server(configurations)
       print(f" --> 1 - {configurations.configServers.client_name} start your Attestable")
       time.sleep(2)
 

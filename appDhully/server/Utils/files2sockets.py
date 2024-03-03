@@ -1,6 +1,6 @@
 """
 title           : socket_files.py
-description     : This server implements function that perform operations
+description     : This server1 implements function that perform operations
                 : to send and receive files over sockets. 
                 :
 source          : It is based on the example from
@@ -12,7 +12,7 @@ date            : 3 Jul 2023
 version         : 1.0
 usage           : 
 notes           :
-compile and run :  It can be imported by  clients and server that  send and
+compile and run :  It can be imported by  clients and server1 that  send and
                 :  receive files over sockets.
                 :
 python_version  : Python 3.7.4 (default, Oct  8 2019, 14:48:17) 
@@ -148,13 +148,13 @@ def sendpicklemsg(clisocket, list, hsize, pbbrecrds):
   print("sendpicklemsh has been called")
   if len(list)==2 and list[0] == "post" :
      print("list[0]=", list[0], "list[1]=", list[1])
-     # server sends response to client
+     # server1 sends response to client
      resplist=[list[1], "has been posted"]
      pbbrecrds.append(list[1])
      msg = pickle.dumps(resplist)
      msg = bytes(f"{len(msg):<{hsize}}", 'utf-8') + msg
      print("This is the msg:::::::::::::::::", msg)
-     # server sends to client
+     # server1 sends to client
      clisocket.send(msg)
      print("clisocket has sent msg")
 
@@ -163,11 +163,11 @@ def sendpicklemsg(clisocket, list, hsize, pbbrecrds):
   # copy this code to a function
   elif len(list)== 1 and list[0] == "retrieve":
      print("list[0]=", list[0])
-     # server sends response to client
+     # server1 sends response to client
      msg = pickle.dumps(pbbrecrds)
      msg = bytes(f"{len(msg):<{hsize}}", 'utf-8') + msg
      print(msg)
-     # server sends to client
+     # server1 sends to client
      print("B4 clisocket.send(msg)..... ")
      clisocket.send(msg) ############# failing 
      print("After clisocket.send(msg)..... ")
@@ -177,12 +177,12 @@ def sendpicklemsg(clisocket, list, hsize, pbbrecrds):
   # copy this code to a function
   else:
      print("ser: Invalid request received")
-     # server sends response to client
+     # server1 sends response to client
      resplist = ["Invalid request received"]
      msg = pickle.dumps(resplist)
      msg = bytes(f"{len(msg):<{hsize}}", 'utf-8') + msg
      print(msg)
-     # server sends to client
+     # server1 sends to client
      #clisocket.send(msg)
 
 

@@ -1,7 +1,7 @@
 import socket
 import ssl
 import os
-from appDhully.server.files2sockets import recv_store_file
+from appDhully.server.Utils.files2sockets import recv_store_file
 
 class SSLClientFile():
     def __init__(self, config_client):

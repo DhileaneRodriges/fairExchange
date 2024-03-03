@@ -1,6 +1,6 @@
 import ssl
 
-from appDhully.server.files2sockets import read_send_file
+from appDhully.server.Utils.files2sockets import read_send_file
 import os
 
 class ClientHandler:
@@ -34,16 +34,16 @@ class ClientHandler:
       # and writing to the file stream
 
 
-      ########## server will receive from client ########
+      ########## server1 will receive from client ########
       recv_store_file(filename, filesize, BUFFER_SIZE, self.conn)
-      print("ser_file_file.py server has read file from socket....")
+      print("ser_file_file.py server1 has read file from socket....")
       11 sep 2023 
       """
 
       cli_req = self.conn.recv(1024)
       print("client request: ", cli_req.decode("UTF-8"))
 
-      ########## server will send file to client ########
+      ########## server1 will send file to client ########
       # experimenting with marco.txt file stored on current subdir
       filename = self.ser_fileName
       file_path = self.conf.path_file

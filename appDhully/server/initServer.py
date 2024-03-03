@@ -2,9 +2,9 @@ import socket
 import ssl
 import threading
 import select
-from appDhully.server.client_handler import ClientHandler
+from appDhully.server.Utils.client_handler import ClientHandler
 
-class Module():
+class Server():
     def __init__(self, configurations):
         self.config = configurations.configServers
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -39,7 +39,7 @@ class Module():
                     try:
                         conn = self.context.wrap_socket(client_socket, server_side=True)
                         ClientHandler(conn, self.config).start()
-                        self.server_socket.close()  # close the server socket or hang
+                        self.server_socket.close()  # close the server1 socket or hang
                         server_socket_open = False  # close and loop again: produces
                     except ssl.SSLError as e:
                         print(e)
