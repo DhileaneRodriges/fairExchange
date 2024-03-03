@@ -2,18 +2,24 @@ import socket
 import ssl
 import threading
 import select
-from appDhully.server.client_handler import ClientHandler
+from pathlib import Path
+
+from appDhully.server.Utils.client_handler import ClientHandler
 
 class Module():
     def __init__(self, configurations):
-        self.config = configurations.configServers
-        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        context.load_cert_chain(certfile=configurations.configServers.config_server.server_cert_chain,
-                                keyfile=configurations.configServers.config_server.server_key, password="camb")
 
+        config = configurations.config.config_server
+        CERTKEYS_DIRECTORY = Path(__file__).resolve().parent.parent.parent.parent / 'certskeys' / 'server'
+
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.load_cert_chain(certfile= CERTKEYS_DIRECTORY/config.server_cert_chain,
+                                keyfile=CERTKEYS_DIRECTORY/config.server_key, password="camb")
+
+        self.configurations = configurations
         self.context = context
-        self.server_name = configurations.configServers.server_name
-        self.local_port = configurations.configServers.local_port
+        self.server_name = configurations.config.server_name
+        self.local_port = configurations.config.local_port
 
         self.server_socket = socket.socket()
         self.server_socket.bind((self.server_name, self.local_port))
@@ -25,7 +31,7 @@ class Module():
         # Cria uma thread para aceitar conexões
         aceitar_thread = threading.Thread(target=self.accept_connection)
         aceitar_thread.start()
-        print(f"Server has been started inside {self.config.client_name}'s attestable running on host: {self.server_name}")
+        print(f"Server has been started inside {configurations.config.client_name}'s attestable running on host: {self.server_name}")
         print(f"It is listening on port {self.local_port}...")
         print(aceitar_thread.name)
 
@@ -38,8 +44,10 @@ class Module():
                     client_socket, _ = self.server_socket.accept()
                     try:
                         conn = self.context.wrap_socket(client_socket, server_side=True)
-                        ClientHandler(conn, self.config).start()
+                        #ClientHandler(conn, self.configurations).start()
                         self.server_socket.close()  # close the server socket or hang
                         server_socket_open = False  # close and loop again: produces
                     except ssl.SSLError as e:
                         print(e)
+    def receiv_file(self, conn):
+        ClientHandler(conn, self.configurations).start()

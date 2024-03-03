@@ -1,6 +1,6 @@
 import ssl
 
-from appDhully.server.files2sockets import read_send_file
+from appDhully.server.Utils.files2sockets import read_send_file
 import os
 
 class ClientHandler:
@@ -10,11 +10,9 @@ class ClientHandler:
   """
 
   def __init__(self, conn, conf):
-
     self.conn = conn
-    self.conf = conf
-    self.ser_fileName = self.conf.config_server.server_file
-    print("\n\n\n...........ser_fileName:", self.ser_fileName)
+    self.conf = conf.config
+
 
   def start(self):
     try:

@@ -1,40 +1,54 @@
 import socket
 import ssl
 import os
-from appDhully.server.files2sockets import recv_store_file
+from pathlib import Path
+
+from appDhully.server.Utils.files2sockets import recv_store_file
 
 class SSLClientFile():
     def __init__(self, config_client):
-        self.config_client = config_client
-        config = config_client.configServers
-        self.client_name = config.client_name
-        self.server = config.server_name
-        self.port = config.local_port
-        self.headersize = config.headersize
+
+        self.config = config_client.config.config_client
+
+        self.client_name = config_client.config.client_name
+        self.server = config_client.config.server_name
+        self.port = config_client.config.local_port
         self.soc = None
         self.conn = None
+        self.CERTS_DIRECTORY = Path(__file__).resolve().parent.parent.parent.parent / 'certskeys' / 'client'
 
     def sock_connect(self):
-        self.server = self.server
-        self.port = self.port
 
         self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # Create a standard TCP Socket
         # Create SSL context which holds the parameters for any sessions
         context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        context.load_verify_locations(self.config_client.configServers.config_client.ca_cert)
-        context.load_cert_chain(certfile=self.config_client.configServers.config_client.client_cert_chain,
-                                keyfile=self.config_client.configServers.config_client.client_key, password="camb")
+
+
+        context.load_verify_locations(self.CERTS_DIRECTORY / self.config.ca_cert)
+        context.load_cert_chain(certfile=self.CERTS_DIRECTORY / self.config.client_cert_chain,
+                                keyfile=self.CERTS_DIRECTORY / self.config.client_key, password="camb")
 
         # We can wrap in an SSL context first, then connect
-        self.conn = context.wrap_socket(self.soc, server_hostname="attestable " + self.config_client.configServers.client_name + " CAMB")
+        self.conn = context.wrap_socket(self.soc, server_hostname="attestable " + self.client_name + " CAMB")
 
         # OK 27Jul2023
         self.conn.connect((self.server, self.port))
+    def send_file(self, module, file_name):
 
-    def send_recv_file(self, filename):
+        # Read file to be sent
+        with open(file_name, "rb") as file:
+            file_data = file.read()
+
+        # Send file data
+        self.conn.sendall(file_data)
+
+        print("File sent successfully.")
+
+    def recv_file(self, file_name):
         try:
+
             # This method uses the already connected conn socket
             print("Negotiated session using cipher suite: {0}\n".format(self.conn.cipher()[0]))
 
@@ -43,6 +57,7 @@ class SSLClientFile():
             print("cli-request_file.py: after send")
 
             print("cli_file_flie.py now waiting from string from ser_file_file.py")
+
             received = self.conn.recv(self.config_client.configServers.buffer_size).decode()
             remote_filename, filesize = received.split(self.config_client.configServers.separator)
             remote_filename = os.path.basename(remote_filename)

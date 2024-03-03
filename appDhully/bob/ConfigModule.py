@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from appDhully.Utils.ConfigModule import ConfigServerModule
+from appDhully.server.Utils.ConfigModule import ConfigServerModule
 
 class ConfigBobModule:
   def __init__(self):

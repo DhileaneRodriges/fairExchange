@@ -12,9 +12,9 @@ class FileClient(FileCommon):
         #context = ssl.SSLContext()
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 
-        RESOURCE_DIRECTORY = Path(__file__).resolve().parent.parent / 'certskeys' / 'server'
-        CLIENT_CERT_CHAIN = RESOURCE_DIRECTORY / 'attAlice.intermediate.chain.pem'
-        CLIENT_KEY = RESOURCE_DIRECTORY / 'attAlice.key.pem'
+        RESOURCE_DIRECTORY = Path(__file__).resolve().parent.parent / 'certskeys' / 'client'
+        CLIENT_CERT_CHAIN = RESOURCE_DIRECTORY / 'aliceClient.intermediate.chain.pem'
+        CLIENT_KEY = RESOURCE_DIRECTORY / 'aliceClient.key.pem'
 
         context.load_cert_chain(certfile=CLIENT_CERT_CHAIN, keyfile=CLIENT_KEY, password="Camb")
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

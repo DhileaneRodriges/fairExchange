@@ -4,6 +4,7 @@ import threading
 from file_server import FileServer
 from my_file_client import FileClient
 from pathlib import Path
+import time
 
 
 def main():
@@ -17,7 +18,7 @@ def main():
     server_thread.start()
 
     # Espera um poucoa para garantir que o servidor seja iniciado antes do cliente
-    import time
+
     time.sleep(1)
 
     # Executa o cliente

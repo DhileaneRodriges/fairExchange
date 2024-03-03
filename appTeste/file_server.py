@@ -44,8 +44,8 @@ class FileServer(FileCommon):
             #context = ssl.SSLContext()
             context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
 
-            SERVER_CERT_CHAIN = self.certskeys / 'bobServer.intermediate.chain.pem'
-            SERVER_KEY = self.certskeys / 'bobServer.key.pem'
+            SERVER_CERT_CHAIN = self.certskeys / 'aliceServer.intermediate.chain.pem'
+            SERVER_KEY = self.certskeys / 'aliceServer.key.pem'
 
             context.load_cert_chain(certfile=SERVER_CERT_CHAIN, keyfile=SERVER_KEY)
             # Envolve o socket do cliente com SSL
