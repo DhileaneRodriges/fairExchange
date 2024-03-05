@@ -4,7 +4,7 @@ import threading
 import select
 from appDhully.server.Utils.client_handler import ClientHandler
 
-class Server():
+class ServerSSL():
     def __init__(self, configurations, server_cert_chain, server_key, host, port):
         self.config = configurations.configuration
 

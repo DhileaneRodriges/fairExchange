@@ -1,11 +1,17 @@
+import time
+
+from appDhully.client.Client import ClientSSL
+from appDhully.server.ServerSSL import ServerSSL
+
+
 def startProcess(conf):
     print(f"-----------------------------------------------------------------------------------------")
     print(f"------Begin process encryption {conf.configuration.client_name}'s document-----")
 
     if conf:
-        module = Server(conf, conf.configuration.config_server.server_cert_chain,
-                        conf.configuration.config_server.server_key, conf.configuration.server_name,
-                        conf.configuration.local_port)
+        module = ServerSSL(conf, conf.configuration.config_server.server_cert_chain,
+                           conf.configuration.config_server.server_key, conf.configuration.server_name,
+                           conf.configuration.local_port)
         print(f" --> 1 - {conf.configuration.client_name} start your Attestable")
         time.sleep(2)
 

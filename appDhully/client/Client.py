@@ -33,7 +33,7 @@ class ClientSSL():
                                 keyfile=self.client_key, password="camb")
 
         # We can wrap in an SSL context first, then connect
-        self.conn = context.wrap_socket(self.soc, server_hostname="attestable " + self.config_client.configuration.client_name + " CAMB")
+        self.conn = context.wrap_socket(self.soc, server_hostname=serverName)
         #self.conn = context.wrap_socket(self.soc, server_hostname=serverName + " CAMB")
 
         # OK 27Jul2023
@@ -55,6 +55,40 @@ class ClientSSL():
             remote_filename = self.config_client.configuration.recv_file_name_prefix + remote_filename
             filesize = int(filesize)
             recv_store_file(remote_filename, filesize, self.config_client.configuration.buffer_size, self.conn)
+            print("cli_file_flie.py has received file from ser_file_file.py")
+
+        finally:
+            if self.conn is not None:
+                self.conn.close()
+    def exchange_encrypted_file(self, filename):
+        conn = self.conn
+        separator = self.config_client.configuration.separator
+        buffer_size = self.config_client.configuration.buffer_size
+        try:
+            # This method uses the already connected conn socket
+
+            print("Negotiated session using cipher suite: {0}\n".format(conn.cipher()[0]))
+
+            # experimenting with simon.txt file stored on current subdir
+            # filename= FILE_NAME
+            filesize = os.path.getsize(filename)
+
+            # In python sockets send and receive strings. Send a string
+            conn.send(f"{filename}{separator}{filesize}".encode())
+
+            ########## client will send file to server ########
+            read_send_file(filename, filesize, buffer_size, conn)
+
+            #####  client will receive file from server #####
+            print("cli_file_flie.py now waiting from string from ser_file_file.py")
+            received = conn.recv(buffer_size).decode()
+            filename, filesize = received.split(separator)
+            # remove filename path if any
+            filename = os.path.basename(filename)
+            filesize = int(filesize)
+            # start receiving the file from the socket
+            # and writing to the file stream
+            recv_store_file(filename, filesize, buffer_size, conn)
             print("cli_file_flie.py has received file from ser_file_file.py")
 
         finally:
