@@ -90,7 +90,7 @@ class SSLclientfile():
      # Create SSL context which holds the parameters for any sessions
      context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
      context.load_verify_locations(CA_CERT)
-     context.load_cert_chain(certfile=CLIENT_CERT_CHAIN, keyfile=CLIENT_KEY)
+     context.load_cert_chain(certfile=CLIENT_CERT_CHAIN, keyfile=CLIENT_KEY, password="camb")
 
 
      # We can wrap in an SSL context first, then connect

@@ -83,7 +83,7 @@ class SSLserverfile():
         """
         print("\nBob's server running... Its PEM pass phrase is: camb\n")
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        context.load_cert_chain(certfile=SERVER_CERT_CHAIN, keyfile=SERVER_KEY)
+        context.load_cert_chain(certfile=SERVER_CERT_CHAIN, keyfile=SERVER_KEY, password="camb")
 
 
         self.context = context

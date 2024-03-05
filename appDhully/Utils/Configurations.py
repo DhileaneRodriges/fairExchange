@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-class ConfigServers:
+class Configuration:
   def __init__(self, server_name, local_port, client_name, path_file, separator, buffer_size,  headersize, recv_file_name_prefix,  config_server, config_client ):
 
     self.server_name = server_name
