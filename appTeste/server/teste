@@ -1,0 +1,49 @@
+import socket
+import os
+
+# Defina o diretório de destino para os arquivos recebidos
+DIRETORIO_DESTINO = "uploads"
+
+def lidar_com_dados(conexao, callback):
+    # Receber o nome do arquivo
+    tamanho_nome = int.from_bytes(conexao.recv(4), byteorder='big')
+    nome = conexao.recv(tamanho_nome).decode()
+
+    # Receber os dados
+    dados = conexao.recv(1024)
+    while dados:
+        callback(nome, dados)
+        dados = conexao.recv(1024)
+
+    conexao.sendall(b"Dados recebidos com sucesso")
+
+def salvar_arquivo(nome_arquivo, dados_arquivo):
+    # Verificar se o diretório de destino existe, se não, crie-o
+    if not os.path.exists(DIRETORIO_DESTINO):
+        os.makedirs(DIRETORIO_DESTINO)
+
+    # Escrever os dados recebidos em um novo arquivo
+    with open(os.path.join(DIRETORIO_DESTINO, nome_arquivo), 'ab') as f:
+        f.write(dados_arquivo)
+
+def iniciar_servidor(host, porta, callback):
+    socket_servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socket_servidor.bind((host, porta))
+    socket_servidor.listen(1)
+    print(f"Servidor ouvindo em {host}:{porta}")
+
+    while True:
+        socket_cliente, endereco_cliente = socket_servidor.accept()
+        print(f"Conexão de {endereco_cliente}")
+
+        # Lidar com os dados recebidos
+        lidar_com_dados(socket_cliente, callback)
+
+        socket_cliente.close()
+
+if __name__ == "__main__":
+    HOST = 'localhost'
+    PORTA = 8000
+
+    # Exemplo de uso: função de callback para salvar arquivos
+    iniciar_servidor(HOST, PORTA, salvar_arquivo)

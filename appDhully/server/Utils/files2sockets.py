@@ -55,8 +55,6 @@ def read_send_file(fname: str, fsize: int, buffer_size: int, sock: socket):
           progress.update(len(bytes_read))
           nbytes= nbytes + len(bytes_read)
 
-
-
 """
 Receive a file from a socket and store it on disk under
 the give name. 
