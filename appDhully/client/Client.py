@@ -94,3 +94,7 @@ class ClientSSL():
         finally:
             if self.conn is not None:
                 self.conn.close()
+    def close_socket(self):
+        if self.conn is not None:
+            self.soc.close()
+            self.conn.close()
