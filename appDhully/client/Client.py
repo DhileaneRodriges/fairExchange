@@ -1,6 +1,9 @@
 import socket
 import ssl
 import os
+
+from cryptography.fernet import Fernet
+
 from appDhully.server.Utils.files2sockets import recv_store_file, read_send_file
 
 
@@ -60,6 +63,31 @@ class ClientSSL():
         finally:
             if self.conn is not None:
                 self.conn.close()
+
+    def send_and_receive_encrypted_file(self, file_path):
+
+        """Encrypts a file and writes the encrypted file to the 'alice/files' directory."""
+        # Generate a key for encryption
+        key = Fernet.generate_key()
+        cipher_suite = Fernet(key)
+
+        # Read the original file data
+        with open(file_path, 'rb') as file:
+            file_data = file.read()
+
+        # Encrypt the file data
+        encrypted_file_data = cipher_suite.encrypt(file_data)
+
+        # Get the base name of the original file and add "_encrypted" to it
+        base_name = os.path.basename(file_path)
+        encrypted_file_name = f"{self.client_name}doc_encrypted{os.path.splitext(base_name)[1]}".lower()
+
+        # Write the encrypted file data to a new file in the 'alice/files' directory
+        with open(f'{self.client_name}/files/{encrypted_file_name}', 'wb') as temp_file:
+            temp_file.write(encrypted_file_data)
+
+        # Return the new encrypted file name
+        return encrypted_file_name
     def exchange_encrypted_file(self, filename):
         conn = self.conn
         separator = self.config_client.configuration.separator

@@ -11,33 +11,24 @@ class ExchangeEncryptedFile():
     def __int__(self):
         pass
 
-    def startProcess(self, conf1, conf2):
-
+    def startProcess(self, conf1, conf2, encrypted_file_Alice, encrypted_file_Bob):
         print(f"-----------------------------------------------------------------------------------------")
         print(f"------Begin process exchange document-----")
 
-
-        self.upServerToReceivDocEncrypted(conf1, conf1.configuration.config_server.intermadiate_server_cert_chain,
-                                     conf1.configuration.config_server.intermadiate_server_key,
-                                     conf1.configuration.server_name, 8290)
+        # Start the server in a new thread
+        server_thread = threading.Thread(target=self.upServerToReceivDocEncrypted,
+                                         args=(conf1, conf1.configuration.config_server.intermadiate_server_cert_chain,
+                                               conf1.configuration.config_server.intermadiate_server_key,
+                                               conf1.configuration.server_name, 8290, encrypted_file_Bob))
+        server_thread.start()
 
         self.upClienteToSendDocumentEncripted(conf2, conf1.configuration.client_name + " Server CAMB",
-                                         conf2.configuration.config_client.intermadiate_client_cert_chain,
-                                         conf2.configuration.config_client.intermadiate_client_key,
-                                         conf1.configuration.server_name, 8290)
+                                              conf2.configuration.config_client.intermadiate_client_cert_chain,
+                                              conf2.configuration.config_client.intermadiate_client_key,
+                                              conf1.configuration.server_name, 8290, encrypted_file_Alice)
 
-        # Obtenção da lista de threads ativas
-        threads_ativas = threading.enumerate()
-
-        # Impressão dos identificadores das threads ativas
-        for thread in threads_ativas:
-            print("Thread ativa:", thread.ident)
-        # time.sleep(2)
-        # upServerToReceivDocEncrypted(ConfigsBob())
-        # upClienteToSendDocumentEncripted(ConfigsAlice())
         print(f"-----------------------------------------------------------------------------------------")
         print(f"------finish process exchange document-----")
-
     def upServerToReceivDocEncrypted(self, conf, server_cert_chain, server_key, host, local_port):
 
         print(f"------Up {conf.configuration.client_name}'s server to receive a document-----")

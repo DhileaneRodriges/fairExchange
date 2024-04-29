@@ -1,5 +1,7 @@
 import os
 import sys
+import time
+
 from appDhully.alice.Configurations import ConfigsAlice
 from appDhully.service.EncryptationProcessService import EncryptationProcessService
 from appDhully.bob.Configurations import ConfigsBob
@@ -12,24 +14,33 @@ def main():
         3: open_notepad,
         0: exit_program
     }
+    last_successful_option = 0
 
     while True:
         print_options()
         option = int(input("Enter an option: "))
         if option in options:
-            options[option]()
+            if option > last_successful_option + 1:
+                print(f"----------------------------------------------------------------------------------------------------")
+                print(f"You must successfully complete option {last_successful_option + 1} before selecting option {option}.")
+                print(f"----------------------------------------------------------------------------------------------------")
+            else:
+                success = options[option]()
+                if success:
+                    last_successful_option = option
         else:
             print("Invalid option. Please try again.")
 
 def start_encryption_process():
     confAlice, confBob = create_configs()
-    EncryptationProcessService().startProcess(confAlice)
-    EncryptationProcessService().startProcess(confBob)
+    successAlice, encrypted_file_Alice  = EncryptationProcessService().startProcess(confAlice)
+    successBob, encrypted_file_Bob = EncryptationProcessService().startProcess(confBob)
+    return successAlice and successBob, encrypted_file_Alice, encrypted_file_Bob
 
-def start_exchange_process():
+def start_exchange_process(encrypted_file_Alice, encrypted_file_Bob):
     aliceConf, bobConf = create_configs()
     exchangeDocuments = ExchangeEncryptedFile()
-    exchangeDocuments.startProcess(bobConf, aliceConf)
+    exchangeDocuments.startProcess(bobConf, aliceConf, encrypted_file_Alice, encrypted_file_Bob)
 
 def create_configs():
     return ConfigsAlice(), ConfigsBob()
