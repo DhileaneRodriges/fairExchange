@@ -16,10 +16,15 @@ class ExchangeEncryptedFile():
         print(f"-----------------------------------------------------------------------------------------")
         print(f"------Begin process exchange document-----")
 
-
-        self.upServerToReceivDocEncrypted(conf1, conf1.configuration.config_server.intermadiate_server_cert_chain,
-                                     conf1.configuration.config_server.intermadiate_server_key,
-                                     conf1.configuration.server_name, 8290)
+        # Start the server in a new thread
+        server_thread = threading.Thread(target=self.upServerToReceivDocEncrypted,
+                                         name="exchange_server",
+                                         args=(conf1,
+                                               conf1.configuration.config_server.intermadiate_server_cert_chain,
+                                               conf1.configuration.config_server.intermadiate_server_key,
+                                               conf1.configuration.server_name,
+                                               8290))
+        server_thread.start()
 
         self.upClienteToSendDocumentEncripted(conf2, conf1.configuration.client_name + " Server CAMB",
                                          conf2.configuration.config_client.intermadiate_client_cert_chain,
