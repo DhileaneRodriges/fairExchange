@@ -16,7 +16,7 @@ class ConfigsBob:
     headersize = 10
     path_file = Path(__file__).resolve().parent / "files"
     server_file = "bobdoc_encrypted.txt"
-    cliente_file = "helloServer.txt"
+    cliente_file = "bobFile.txt"
 
     resource_directory = Path(__file__).resolve().parent.parent.parent / 'certskeys' / 'server'
 
@@ -46,7 +46,7 @@ class ConfigsBob:
     clientParser.add_argument("-s", "--server", help="Host where Bob's attestablei run, default is localhost",
                         default=server_name)
     clientParser.add_argument("-p", "--port", help="Server port, default is ", default=local_port)
-    clientParser.add_argument("-f", "--file", help="File to send to server, default is helloServer.txt",
+    clientParser.add_argument("-f", "--file", help="File to send to server, default is aliceFile.txt",
                         default=cliente_file)
 
     configClientModule = ConfigClientModule( resource_directory_client, client_cert_chain, client_key, intermadiate_client_cert_chain, intermadiate_client_key, ca_cert, clientParser, cliente_file)
