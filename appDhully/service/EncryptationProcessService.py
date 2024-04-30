@@ -20,7 +20,7 @@ class EncryptationProcessService():
             print(f"-----------------------------------------------------------------------------------------")
             print(f"------Begin process encryption {self.conf.configuration.client_name}'s document-----")
 
-            server_thread = threading.Thread(target=self.start_server, name="server")
+            server_thread = threading.Thread(target=self.start_server, name="encryption_server")
             server_thread.start()
 
             client, received_file = self.start_client()
@@ -38,7 +38,7 @@ class EncryptationProcessService():
                   self.conf.configuration.config_server.server_key,
                   "uploadFile",
                   self.conf.configuration.server_name,
-                  self.conf.configuration.local_port)
+                  self.conf.configuration.local_port, None)
         print(f" --> 1 - {self.conf.configuration.client_name} start your Attestable")
 
         return server

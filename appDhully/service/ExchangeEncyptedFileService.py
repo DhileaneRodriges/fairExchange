@@ -17,9 +17,13 @@ class ExchangeEncryptedFile():
 
         # Start the server in a new thread
         server_thread = threading.Thread(target=self.upServerToReceivDocEncrypted,
-                                         args=(conf1, conf1.configuration.config_server.intermadiate_server_cert_chain,
+                                         name="exchange_server",
+                                         args=(conf1,
+                                               conf1.configuration.config_server.intermadiate_server_cert_chain,
                                                conf1.configuration.config_server.intermadiate_server_key,
-                                               conf1.configuration.server_name, 8290, encrypted_file_Bob))
+                                               conf1.configuration.server_name,
+                                               8290,
+                                               encrypted_file_Bob))
         server_thread.start()
 
         self.upClienteToSendDocumentEncripted(conf2, conf1.configuration.client_name + " Server CAMB",
@@ -29,15 +33,14 @@ class ExchangeEncryptedFile():
 
         print(f"-----------------------------------------------------------------------------------------")
         print(f"------finish process exchange document-----")
-    def upServerToReceivDocEncrypted(self, conf, server_cert_chain, server_key, host, local_port):
+    def upServerToReceivDocEncrypted(self, conf, server_cert_chain, server_key, host, local_port, file_to_exchange):
 
         print(f"------Up {conf.configuration.client_name}'s server to receive a document-----")
-        server = ServerSSL(conf, server_cert_chain, server_key, "exchangeEncryptedFiles", host, local_port)
+        server = ServerSSL(conf, server_cert_chain, server_key, "exchangeEncryptedFiles", host, local_port, file_to_exchange)
 
-    def upClienteToSendDocumentEncripted(self, conf, serverName, client_cert_chain, client_key, host, port):
+    def upClienteToSendDocumentEncripted(self, conf, serverName, client_cert_chain, client_key, host, port, file_to_exchange):
 
         ssl_client_file = ClientSSL(conf, client_cert_chain, client_key, host, port)
         ssl_client_file.sock_connect(serverName)
-        ssl_client_file.exchange_encrypted_file(
-            conf.configuration.path_file / conf.configuration.config_server.server_file)
+        ssl_client_file.exchange_encrypted_file(file_to_exchange)
         ssl_client_file.conn.close()

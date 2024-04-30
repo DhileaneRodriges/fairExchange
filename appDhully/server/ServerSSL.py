@@ -5,7 +5,7 @@ import select
 from appDhully.server.Utils.client_handler import ClientHandler
 
 class ServerSSL():
-    def __init__(self, configurations, server_cert_chain, server_key, option_service, host, port):
+    def __init__(self, configurations, server_cert_chain, server_key, option_service, host, port, file_exchange=None):
         """Initializes the server with the given configurations."""
         self.config = configurations.configuration
         self.context = self.create_context(server_cert_chain, server_key)
@@ -15,6 +15,7 @@ class ServerSSL():
         self.rd_list = [self.server_socket]
         self.wr_list = []
         self.er_list = []
+        self.file_exchange = file_exchange
 
         self.accept_connections(option_service)
 

@@ -15,8 +15,11 @@ def main():
         0: exit_program
     }
     last_successful_option = 0
+    encrypted_files_1 = None
+    encrypted_files_2 = None
 
     while True:
+        time.sleep(2)
         print_options()
         option = int(input("Enter an option: "))
         if option in options:
@@ -25,7 +28,12 @@ def main():
                 print(f"You must successfully complete option {last_successful_option + 1} before selecting option {option}.")
                 print(f"----------------------------------------------------------------------------------------------------")
             else:
-                success = options[option]()
+                if option == 1:
+                    success, encrypted_files_1, encrypted_files_2= options[option]()
+                elif option == 2 and encrypted_files_1 and encrypted_files_2 is not None:
+                    success = options[option](encrypted_files_1, encrypted_files_2)
+                else:
+                    success = options[option]()
                 if success:
                     last_successful_option = option
         else:

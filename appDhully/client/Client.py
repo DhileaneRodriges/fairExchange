@@ -1,6 +1,10 @@
 import socket
 import ssl
 import os
+import time
+
+from tqdm import tqdm
+
 
 from cryptography.fernet import Fernet
 
@@ -65,29 +69,43 @@ class ClientSSL():
                 self.conn.close()
 
     def send_and_receive_encrypted_file(self, file_path):
+        progress = None
+        try:
+            # Read the original file data
+            with open(file_path, 'rb') as file:
+                file_data = file.read()
+                file_name = file.name
 
-        """Encrypts a file and writes the encrypted file to the 'alice/files' directory."""
-        # Generate a key for encryption
-        key = Fernet.generate_key()
-        cipher_suite = Fernet(key)
+            file_size = os.path.getsize(file_path)
+            progress = tqdm(total=file_size, unit="B", unit_scale=True, desc=file_name)
 
-        # Read the original file data
-        with open(file_path, 'rb') as file:
-            file_data = file.read()
+            # send data file to server
+            block_size = 1024 # 1KB
+            for i in range(0, len(file_data), block_size):
+                data_block = file_data[i:i + block_size]
+                self.conn.sendall(data_block)
+                progress.update(len(data_block))
 
-        # Encrypt the file data
-        encrypted_file_data = cipher_suite.encrypt(file_data)
+            print(f"The file {file_path} has been sent to the server.")
 
-        # Get the base name of the original file and add "_encrypted" to it
-        base_name = os.path.basename(file_path)
-        encrypted_file_name = f"{self.client_name}doc_encrypted{os.path.splitext(base_name)[1]}".lower()
+            # Get the base name of the original file and add "_encrypted" to it
+            base_name = os.path.basename(file_path)
+            encrypted_file_name = f"{self.client_name}doc_encrypted{os.path.splitext(base_name)[1]}".lower()
 
-        # Write the encrypted file data to a new file in the 'alice/files' directory
-        with open(f'{self.client_name}/files/{encrypted_file_name}', 'wb') as temp_file:
-            temp_file.write(encrypted_file_data)
+            # Write the original file data to a new file in the 'alice/files' directory
+            with open(f'{self.client_name}/files/{encrypted_file_name}', 'wb') as temp_file:
+                temp_file.write(file_data)
+            return encrypted_file_name
+        except Exception as e:
+            print(f"erro to send file to server: {e}")
+        finally:
+            if self.conn is not None:
+                self.conn.close()
+            if progress is not None:
+                progress.close()
+
 
         # Return the new encrypted file name
-        return encrypted_file_name
     def exchange_encrypted_file(self, filename):
         conn = self.conn
         separator = self.config_client.configuration.separator
