@@ -1,16 +1,25 @@
 import socket
+import threading
+import time
+import ClientHandler
 
-receber = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-receber.bind(("localhost", 7777))
-print("ouvindo conexao")
-receber.listen(10)
-connection, address = receber.accept()
+HOST = "localhost"  # Endereço do servidor
+PORT = 8000  # Porta do servidor
+HEARTBEAT_INTERVAL = 5
+def start_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+        server_socket.bind((HOST, PORT))
+        server_socket.listen(5)
 
-namefile = connection.recv(1024).decode()
-with open(namefile, 'rb') as file:
-    for data in file.readlines():
-        connection.send(data)
+        while True:
+            client_socket, address = server_socket.accept()
+            print(f"Cliente conectado: {address}")
 
-    print('Arquivo Enviado')
+            # Criar e iniciar thread para gerenciar o cliente
+            client_handler = ClientHandler(client_socket)
+            client_handler.start()
+if __name__ == "__main__":
+    start_server()
+
 
 
