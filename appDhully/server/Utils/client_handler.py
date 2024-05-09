@@ -67,7 +67,7 @@ class ClientHandler:
       # and writing to the file stream
 
       ########## server will receive from client ########
-      recv_store_file(filename, filesize, buffer_size, self.conn)
+      recv_store_file(self.conf.path_file/filename, filesize, buffer_size, self.conn)
       print("ser_file_file.py server has read file from socket....")
 
       ########## server will send file to client ########

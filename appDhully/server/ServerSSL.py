@@ -15,7 +15,8 @@ class ServerSSL():
         self.rd_list = [self.server_socket]
         self.wr_list = []
         self.er_list = []
-        self.file_exchange = file_exchange
+        if file_exchange is not None:
+            self.config.config_server.server_file = file_exchange
 
         self.accept_connections(option_service)
 
@@ -54,20 +55,7 @@ class ServerSSL():
         finally:
             self.server_socket.close()
 
-    def handle_encrypted_file(self, conn):
-        """Receives a file, encrypts it and sends it back."""
-        # Receive file from client
-        file_data = conn.recv(1024)
-        # Encrypt the file data
-        encrypted_data = self.encrypt_file_data(file_data)
-        # Send the encrypted file back to the client
-        conn.sendall(encrypted_data)
 
-    def encrypt_file_data(self, file_data):
-        """Encrypts the file data and returns it."""
-        # Implement your encryption logic here
-        encrypted_data = file_data  # Replace this with your encryption logic
-        return encrypted_data
     def close_socket(self):
         """Closes the server socket."""
         if self.server_socket is not None:

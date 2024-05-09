@@ -134,7 +134,7 @@ class ClientSSL():
             filesize = int(filesize)
             # start receiving the file from the socket
             # and writing to the file stream
-            recv_store_file(filename, filesize, buffer_size, conn)
+            recv_store_file(self.config_client.configuration.path_file/filename, filesize, buffer_size, conn)
             print("cli_file_flie.py has received file from ser_file_file.py")
 
         finally:
