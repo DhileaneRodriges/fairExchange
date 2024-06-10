@@ -12,7 +12,7 @@ from appDhully.server.Utils.files2sockets import recv_store_file, read_send_file
 
 
 class ClientSSL():
-    def __init__(self, config_client, client_cert_chain, client_key, host, port):
+    def __init__(self, config_client, client_cert_chain, client_key, host, port, use_ssl=True):
         self.config_client = config_client
         config = config_client.configuration
         self.client_name = config.client_name
@@ -23,6 +23,7 @@ class ClientSSL():
         self.headersize = config.headersize
         self.soc = None
         self.conn = None
+        self.use_ssl = use_ssl
 
 
 
@@ -31,18 +32,19 @@ class ClientSSL():
         self.port = self.port
 
         self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if self.use_ssl:
+            # Create a standard TCP Socket
+            # Create SSL context which holds the parameters for any sessions
+            context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+            context.load_verify_locations(self.config_client.configuration.config_client.ca_cert)
+            context.load_cert_chain(certfile=self.client_cert_chain,
+                                    keyfile=self.client_key, password="camb")
 
-        # Create a standard TCP Socket
-        # Create SSL context which holds the parameters for any sessions
-        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        context.load_verify_locations(self.config_client.configuration.config_client.ca_cert)
-        context.load_cert_chain(certfile=self.client_cert_chain,
-                                keyfile=self.client_key, password="camb")
-
-        # We can wrap in an SSL context first, then connect
-        self.conn = context.wrap_socket(self.soc, server_hostname=serverName)
-        #self.conn = context.wrap_socket(self.soc, server_hostname=serverName + " CAMB")
-
+            # We can wrap in an SSL context first, then connect
+            self.conn = context.wrap_socket(self.soc, server_hostname=serverName)
+            #self.conn = context.wrap_socket(self.soc, server_hostname=serverName + " CAMB")
+        else:
+            self.conn = self.soc
         # OK 27Jul2023
         self.conn.connect((self.server, self.port))
 

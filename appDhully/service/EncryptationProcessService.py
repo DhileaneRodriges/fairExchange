@@ -38,7 +38,7 @@ class EncryptationProcessService():
                   self.conf.configuration.config_server.server_key,
                   "uploadFile",
                   self.conf.configuration.server_name,
-                  self.conf.configuration.local_port, None)
+                  self.conf.configuration.local_port, None, True)
         print(f" --> 1 - {self.conf.configuration.client_name} start your Attestable")
 
         return server
@@ -46,7 +46,7 @@ class EncryptationProcessService():
     def start_client(self):
         client = ClientSSL(self.conf, self.conf.configuration.config_client.client_cert_chain,
                            self.conf.configuration.config_client.client_key, self.conf.configuration.server_name,
-                           self.conf.configuration.local_port)
+                           self.conf.configuration.local_port, True)
 
         client.sock_connect("attestable " + self.conf.configuration.client_name + " CAMB")
         received_file = client.send_and_receive_encrypted_file( self.conf.configuration.path_file / self.conf.configuration.config_client.cliente_file)

@@ -36,11 +36,11 @@ class ExchangeEncryptedFile():
     def upServerToReceivDocEncrypted(self, conf, server_cert_chain, server_key, host, local_port, file_to_exchange):
 
         print(f"------Up {conf.configuration.client_name}'s module to exchange documents-----")
-        server = ServerSSL(conf, server_cert_chain, server_key, "exchangeEncryptedFiles", host, local_port, file_to_exchange)
+        server = ServerSSL(conf, server_cert_chain, server_key, "exchangeEncryptedFiles", host, local_port, file_to_exchange,True)
 
     def upClienteToSendDocumentEncripted(self, conf, serverName, client_cert_chain, client_key, host, port, file_to_exchange):
         print(f"------Up {conf.configuration.client_name}'s module to exchange documents-----")
-        ssl_client_file = ClientSSL(conf, client_cert_chain, client_key, host, port)
+        ssl_client_file = ClientSSL(conf, client_cert_chain, client_key, host, port, True)
         ssl_client_file.sock_connect(serverName)
         ssl_client_file.exchange_encrypted_file(file_to_exchange)
         ssl_client_file.conn.close()
