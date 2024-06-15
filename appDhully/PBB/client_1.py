@@ -1,8 +1,12 @@
+import hashlib
 import socket
 
 def start_client():
     # Create a socket object
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Set a timeout of 5 seconds
+    client_socket.settimeout(10)
 
     # Get local machine name
     host = socket.gethostname()
@@ -14,8 +18,12 @@ def start_client():
     client_socket.connect((host, port))
 
     # Send a message to the server
-    message = 'positive'  # or 'negative'
+    client_name = "Alice"  # or "Client2" for client_2.py
+    hash_object = hashlib.sha256(b'123')
+    hex_dig = hash_object.hexdigest()
+    message = f'{client_name},{hex_dig},negative'  # or 'negative' for client_2.py
     client_socket.send(message.encode())
+
 
     # Wait for the response from the server
     while True:

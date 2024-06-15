@@ -20,6 +20,9 @@ def start_server():
     client_messages = []
     client_sockets = []
 
+    # Set to store client hashes
+    client_hashes = set()
+
     while True:
         # Establish a connection
         client_socket, addr = server_socket.accept()
@@ -28,10 +31,16 @@ def start_server():
 
         # Receive data from the client
         data = client_socket.recv(1024)
-        print("Received %s from the client" % data.decode())
+        client_name, client_hash, message = data.decode().split(',')
+
+        # Add the hash to the record
+        client_hashes.add(client_hash)
+
+        print(f"Received {message} from the client {client_name} with hash {client_hash}")
+        client_messages.append((client_name, client_hash, message))
+
 
         # Store the client message
-        client_messages.append(data.decode())
         client_sockets.append(client_socket)
 
         # If two clients have sent their messages
@@ -52,7 +61,7 @@ def start_server():
 def process_messages(messages):
     # Implement your message processing logic here
     # For example, if both messages are 'positive', return 'positive'
-    if all(message == 'positive' for message in messages):
+    if all(message[2] == 'positive' for message in messages):
         return 'positive'
     else:
         return 'negative'
