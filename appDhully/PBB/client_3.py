@@ -18,8 +18,8 @@ def start_client():
     client_socket.connect((host, port))
 
     # Send a message to the server
-    client_name = "Bob"
-    hash_object = hashlib.sha256(b'123')
+    client_name = "chuck"
+    hash_object = hashlib.sha256(b'321')
     hex_dig = hash_object.hexdigest()
     message = f'{client_name},{hex_dig},Sync'
     client_socket.send(message.encode())

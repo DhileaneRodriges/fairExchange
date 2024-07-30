@@ -6,7 +6,7 @@ def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Set a timeout of 5 seconds
-    client_socket.settimeout(10)
+    client_socket.settimeout(30)
 
     # Get local machine name
     host = socket.gethostname()
@@ -21,16 +21,21 @@ def start_client():
     client_name = "Alice"  # or "Client2" for client_2.py
     hash_object = hashlib.sha256(b'123')
     hex_dig = hash_object.hexdigest()
-    message = f'{client_name},{hex_dig},negative'  # or 'negative' for client_2.py
+    message = f'{client_name},{hex_dig},Sync'  # or 'negative' for client_2.py
     client_socket.send(message.encode())
 
 
     # Wait for the response from the server
-    while True:
-        response = client_socket.recv(1024)
-        if response:
-            print("The server responded with: %s" % response.decode())
-            break
+    try:
+        while True:
+            response = client_socket.recv(1024)
+            if response:
+                print("The server responded with: %s" % response.decode())
+                break
+    except socket.timeout:
+        print('Timeout occurred, the message will be removed...')
+        remove_message = f'{client_name},{hex_dig},remove'
+        client_socket.send(remove_message.encode())
 
     # Close the connection with the server
     client_socket.close()

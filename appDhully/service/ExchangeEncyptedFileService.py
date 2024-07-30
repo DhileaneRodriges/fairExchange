@@ -12,27 +12,35 @@ class ExchangeEncryptedFile():
         pass
 
     def startProcess(self, conf1, conf2, encrypted_file_Alice, encrypted_file_Bob):
-        print(f"-----------------------------------------------------------------------------------------")
-        print(f"------Begin process exchange document-----")
 
-        # Start the server in a new thread
-        server_thread = threading.Thread(target=self.upServerToReceivDocEncrypted,
-                                         name="exchange_server",
-                                         args=(conf1,
-                                               conf1.configuration.config_server.intermadiate_server_cert_chain,
-                                               conf1.configuration.config_server.intermadiate_server_key,
-                                               conf1.configuration.server_name,
-                                               8290,
-                                               encrypted_file_Bob))
-        server_thread.start()
+        try:
+            print(f"-----------------------------------------------------------------------------------------")
+            print(f"------Begin process exchange document-----")
+            # Start the server in a new thread
+            server_thread = threading.Thread(target=self.upServerToReceivDocEncrypted,
+                                             name="exchange_server",
+                                             args=(conf1,
+                                                   conf1.configuration.config_server.intermadiate_server_cert_chain,
+                                                   conf1.configuration.config_server.intermadiate_server_key,
+                                                   conf1.configuration.server_name,
+                                                   8290,
+                                                   encrypted_file_Bob))
+            server_thread.start()
 
-        self.upClienteToSendDocumentEncripted(conf2, conf1.configuration.client_name + " Server CAMB",
-                                              conf2.configuration.config_client.intermadiate_client_cert_chain,
-                                              conf2.configuration.config_client.intermadiate_client_key,
-                                              conf1.configuration.server_name, 8290, encrypted_file_Alice)
+            self.upClienteToSendDocumentEncripted(conf2, conf1.configuration.client_name + " Server CAMB",
+                                                  conf2.configuration.config_client.intermadiate_client_cert_chain,
+                                                  conf2.configuration.config_client.intermadiate_client_key,
+                                                  conf1.configuration.server_name, 8290, encrypted_file_Alice)
+            print(f"-----------------------------------------------------------------------------------------")
+            print(f"------finish process exchange document-----")
+            return True
 
-        print(f"-----------------------------------------------------------------------------------------")
-        print(f"------finish process exchange document-----")
+        except Exception as e:
+            print(f"An error occurred during the encryption process: {e}")
+            return False, None
+
+
+
     def upServerToReceivDocEncrypted(self, conf, server_cert_chain, server_key, host, local_port, file_to_exchange):
 
         print(f"------Up {conf.configuration.client_name}'s module to exchange documents-----")
