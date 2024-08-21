@@ -2,6 +2,8 @@ import os
 import sys
 import time
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from appDhully.alice.Configurations import ConfigsAlice
 from appDhully.service.EncryptationProcessService import EncryptationProcessService
 from appDhully.service.ExchangeEncyptedFileService import ExchangeEncryptedFile
