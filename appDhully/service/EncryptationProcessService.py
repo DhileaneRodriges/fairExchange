@@ -13,17 +13,17 @@ class EncryptationProcessService():
         pass
 
     def startProcess(self, conf):
-        self.conf = conf
-        if self.conf is None:
+
+        if conf is None:
             return False
         try:
             print(f"-----------------------------------------------------------------------------------------")
-            print(f"------Begin process encryption {self.conf.configuration.client_name}'s document-----")
+            print(f"------Begin process encryption {conf.configuration.client_name}'s document-----")
 
-            server_thread = threading.Thread(target=self.start_server, name="encryption_server")
+            server_thread = threading.Thread(target=self.start_server, name="encryption_server", args=(conf,))
             server_thread.start()
 
-            client, received_file = self.start_client()
+            client, received_file = self.start_client(conf)
 
             print(f"------Finish process encryption {conf.configuration.client_name}'s document-----")
             time.sleep(2)
@@ -33,22 +33,22 @@ class EncryptationProcessService():
             print(f"An error occurred during the encryption process: {e}")
             return False, None
 
-    def start_server(self):
-        server = ServerSSL(self.conf, self.conf.configuration.config_server.server_cert_chain,
-                  self.conf.configuration.config_server.server_key,
+    def start_server(self, conf):
+        server = ServerSSL(conf, conf.configuration.config_server.server_cert_chain,
+                  conf.configuration.config_server.server_key,
                   "uploadFile",
-                  self.conf.configuration.server_name,
-                  self.conf.configuration.local_port, None, True)
-        print(f" --> 1 - {self.conf.configuration.client_name} start your Attestable")
+                  conf.configuration.server_name,
+                  conf.configuration.local_port, None, True)
+        print(f" --> 1 - {conf.configuration.client_name} start your Attestable")
 
         return server
 
-    def start_client(self):
-        client = ClientSSL(self.conf, self.conf.configuration.config_client.client_cert_chain,
-                           self.conf.configuration.config_client.client_key, self.conf.configuration.server_name,
-                           self.conf.configuration.local_port, True)
+    def start_client(self, conf):
+        client = ClientSSL(conf, conf.configuration.config_client.client_cert_chain,
+                           conf.configuration.config_client.client_key, conf.configuration.server_name,
+                           conf.configuration.local_port, True)
 
-        client.sock_connect("attestable " + self.conf.configuration.client_name + " CAMB")
-        received_file = client.send_and_receive_encrypted_file( self.conf.configuration.path_file / self.conf.configuration.config_client.cliente_file)
+        client.sock_connect("attestable " + conf.configuration.client_name + " CAMB")
+        received_file = client.send_and_receive_encrypted_file( conf.configuration.path_file / conf.configuration.config_client.cliente_file)
 
-        return client, self.conf.configuration.path_file/ received_file
+        return client, conf.configuration.path_file/ received_file

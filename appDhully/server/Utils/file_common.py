@@ -7,13 +7,11 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 class FileCommon:
-    def encrypt_file(self, file_path, key):
-        with open(file_path, 'rb') as file:
-            plaintext = file.read()
+    def encrypt_file(self, file_content, key):
 
         cipher = Cipher(algorithms.AES(key), modes.CFB(b'\0' * 16), backend=default_backend())
         encryptor = cipher.encryptor()
-        ciphertext = encryptor.update(plaintext) + encryptor.finalize()
+        ciphertext = encryptor.update(file_content) + encryptor.finalize()
 
         return ciphertext
 

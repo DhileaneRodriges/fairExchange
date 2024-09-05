@@ -73,19 +73,21 @@ class ClientSSL():
             # Read the original file data
             with open(file_path, 'rb') as file:
                 file_data = file.read()
-                file_name = file.name
 
             file_size = os.path.getsize(file_path)
-            progress = tqdm(total=file_size, unit="B", unit_scale=True, desc=file_name)
+
+            progress = tqdm(total=file_size, desc=F"{self.client_name} sends file to ATT for encryption", unit="B", unit_scale=True)
 
             # send data file to server
-            block_size = 1024 # 1KB
+            block_size = 1024  # 1KB
             for i in range(0, len(file_data), block_size):
                 data_block = file_data[i:i + block_size]
                 self.conn.sendall(data_block)
                 progress.update(len(data_block))
 
-            print(f"The file {file_path} has been sent to the server.")
+            # Receive response from server
+            response = self.conn.recv(4096)  # Adjust buffer size as needed
+            print(f"Response from server")
 
             # Get the base name of the original file and add "_encrypted" to it
             base_name = os.path.basename(file_path)
@@ -93,7 +95,7 @@ class ClientSSL():
 
             # Write the original file data to a new file in the 'alice/files' directory
             with open(f'{self.client_name}/files/{encrypted_file_name}', 'wb') as temp_file:
-                temp_file.write(file_data)
+                temp_file.write(response)
             return encrypted_file_name
         except Exception as e:
             print(f"erro to send file to server: {e}")

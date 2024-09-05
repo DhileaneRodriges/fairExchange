@@ -1,6 +1,7 @@
 import ssl
 
-from appDhully.server.Utils.files2sockets import read_send_file, recv_store_file
+from appDhully.server.Utils.file_common import FileCommon
+from appDhully.server.Utils.files2sockets import read_send_file, recv_store_file, send_content
 import os
 
 class ClientHandler:
@@ -26,16 +27,14 @@ class ClientHandler:
     try:
 
       cli_req = self.conn.recv(1024)
-      print("client request: ", cli_req.decode("UTF-8"))
+      #print("client request: ", cli_req.decode("UTF-8"))
 
-      ########## server1 will send file to client ########
-      # experimenting with marco.txt file stored on current subdir
-      filename = self.ser_fileName
-      file_path = self.conf.path_file
-      filesize = os.path.getsize(file_path/ filename)
       # In python sockets send and receive strings. Send a string
-      self.conn.send(f"{filename}{self.conf.separator}{filesize}".encode())
-      read_send_file(file_path/filename, filesize, self.conf.buffer_size, self.conn)
+      key = b"thisisaverysecretkey123"[:32].ljust(32, b'\0')
+
+      file_common = FileCommon()
+      encryptedContent = file_common.encrypt_file(cli_req, key)
+      send_content(encryptedContent,self.conf.client_name, self.conn)
       print("ser_file_file.py has sent a file to cli_file)flie.py")
 
       # print("ser_str.py will now send a string to cli_str.py")

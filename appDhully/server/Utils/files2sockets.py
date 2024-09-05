@@ -20,6 +20,8 @@ python_version  : Python 3.7.4 (default, Oct  8 2019, 14:48:17)
 
 
 import socket
+import ssl
+
 import tqdm
 import os
 
@@ -54,6 +56,39 @@ def read_send_file(fname: str, fsize: int, buffer_size: int, sock: socket):
           # update the progress bar
           progress.update(len(bytes_read))
           nbytes= nbytes + len(bytes_read)
+
+def send_content(content, client_name, sock: socket.socket):
+    if isinstance(content, str):
+        content_bytes = content.encode()
+    else:
+        content_bytes = content
+
+    fsize = len(content_bytes)
+    progress = tqdm.tqdm(range(fsize), F"ATT responds to {client_name} with encrypted file", unit="B", unit_scale=True, unit_divisor=1024)
+
+    nbytes = 0
+    buffer_size = 4096  # Define a buffer size for sending in chunks
+    while nbytes < fsize:
+        try:
+            # Determine the chunk size
+            chunk_size = min(buffer_size, fsize - nbytes)
+            # Get the chunk from the content
+            chunk = content_bytes[nbytes:nbytes + chunk_size]
+            # Send the chunk
+            sock.send(chunk)
+            # Update the progress bar
+            progress.update(len(chunk))
+            nbytes += len(chunk)
+        except ssl.SSLEOFError as e:
+            print(f"SSL EOF error occurred: {e}")
+            break
+        except ssl.SSLError as e:
+            print(f"SSL error occurred: {e}")
+            break
+        except Exception as e:
+            print(f"General error occurred: {e}")
+            break
+
 
 """
 Receive a file from a socket and store it on disk under
