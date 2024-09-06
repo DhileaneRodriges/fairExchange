@@ -49,6 +49,13 @@ class EncryptationProcessService():
                            conf.configuration.local_port, True)
 
         client.sock_connect("attestable " + conf.configuration.client_name + " CAMB")
-        received_file = client.send_and_receive_encrypted_file( conf.configuration.path_file / conf.configuration.config_client.cliente_file)
 
-        return client, conf.configuration.path_file/ received_file
+        path_f = conf.configuration.path_file
+        print(f'path file: {path_f}')
+        cliente_f = conf.configuration.config_client.cliente_file
+        print(f'client file: {cliente_f}')
+
+        received_file = client.send_and_receive_encrypted_file( path_f / cliente_f)
+
+        print("client request: ", received_file)
+        return client, path_f/ received_file

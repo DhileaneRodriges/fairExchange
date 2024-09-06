@@ -94,7 +94,7 @@ class ClientSSL():
             encrypted_file_name = f"{self.client_name}doc_encrypted{os.path.splitext(base_name)[1]}".lower()
 
             # Write the original file data to a new file in the 'alice/files' directory
-            with open(f'{self.client_name}/files/{encrypted_file_name}', 'wb') as temp_file:
+            with open(f'{self.client_name}/files/{encrypted_file_name}'.lower(), 'wb') as temp_file:
                 temp_file.write(response)
             return encrypted_file_name
         except Exception as e:
