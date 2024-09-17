@@ -51,7 +51,7 @@ def start_encryption_process():
 def start_exchange_process(encrypted_file_Alice, encrypted_file_Bob):
     aliceConf, bobConf = create_configs()
     exchangeDocuments = ExchangeEncryptedFile()
-    successExchange = exchangeDocuments.startProcess(bobConf, aliceConf, encrypted_file_Alice, encrypted_file_Bob)
+    successExchange = exchangeDocuments.startProcess( aliceConf, bobConf, encrypted_file_Alice, encrypted_file_Bob)
     return successExchange
 def start_pbb_process():
     pbbService = PBBService()

@@ -48,7 +48,8 @@ class EncryptationProcessService():
                            conf.configuration.config_client.client_key, conf.configuration.server_name,
                            conf.configuration.local_port, True)
 
-        client.sock_connect("attestable " + conf.configuration.client_name + " CAMB")
+        #client.sock_connect("attestable " + conf.configuration.client_name + " CAMB")
+        client.sock_connect("GCA")
 
         path_f = conf.configuration.path_file
         print(f'path file: {path_f}')
