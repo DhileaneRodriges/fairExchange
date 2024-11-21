@@ -6,7 +6,7 @@ def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Set a timeout of 5 seconds
-    client_socket.settimeout(30)
+    #client_socket.settimeout(30)
 
     # Get local machine name
     host = socket.gethostname()
@@ -18,20 +18,28 @@ def start_client():
     client_socket.connect((host, port))
 
     # Send a message to the server
-    client_name = "Alice"  # or "Client2" for client_2.py
+    client_name = "Bob"
     hash_object = hashlib.sha256(b'123')
     hex_dig = hash_object.hexdigest()
-    message = f'{client_name},{hex_dig},Sync'  # or 'negative' for client_2.py
+    message = f'{client_name},{hex_dig},Sync_B'
+    print(f" {client_name} sent: Sync_B to PBB")
     client_socket.send(message.encode())
-
 
     # Wait for the response from the server
     try:
         while True:
             response = client_socket.recv(1024)
-            if response:
-                print("The server responded with: %s" % response.decode())
-                break
+            response = response.decode()
+            #if response == 'Sync':
+            if "Cancel" in response.lower():
+                acao = "Abort exchange."
+            else:
+                acao = "The exchange can be successfully."
+            print(f"The PBB responded with: {response}. {acao}")
+            break
+            #else:
+            #    print(f"The PBB responded with: {response}_B/Sync_A The exchange has been aborted")
+            #    break
     except socket.timeout:
         print('Timeout occurred, the message will be removed...')
         remove_message = f'{client_name},{hex_dig},remove'

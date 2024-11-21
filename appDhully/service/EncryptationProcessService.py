@@ -1,8 +1,5 @@
 import threading
 import time
-from asyncio import threads
-
-import psutil
 
 from appDhully.client.Client import ClientSSL
 from appDhully.server.ServerSSL import ServerSSL

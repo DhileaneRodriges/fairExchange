@@ -5,16 +5,16 @@ import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from appDhully.alice.Configurations import ConfigsAlice
+from appDhully.service.SincronizationProcessService import SincronizationProcessService
 from appDhully.service.EncryptationProcessService import EncryptationProcessService
 from appDhully.service.ExchangeEncyptedFileService import ExchangeEncryptedFile
-from appDhully.service.PBBService import PBBService
 from appDhully.bob.Configurations import ConfigsBob
 
 def main():
     options = {
         1: start_encryption_process,
         2: start_exchange_process,
-        3: start_pbb_process,
+        3: select_sincronization_process,
         0: exit_program
     }
     last_successful_option = 0
@@ -51,17 +51,19 @@ def start_encryption_process():
 def start_exchange_process(encrypted_file_Alice, encrypted_file_Bob):
     aliceConf, bobConf = create_configs()
     exchangeDocuments = ExchangeEncryptedFile()
-    successExchange = exchangeDocuments.startProcess( aliceConf, bobConf, encrypted_file_Alice, encrypted_file_Bob)
+    successExchange = exchangeDocuments.startProcess( aliceConf, bobConf,encrypted_file_Alice, encrypted_file_Bob)
     return successExchange
-def start_pbb_process():
-    pbbService = PBBService()
-    pbbService.startProcess()
+
+def select_sincronization_process():
+    SincronizationProcessService().display_sync_menu()
+
 def create_configs():
     return ConfigsAlice(), ConfigsBob()
+
 def print_options():
     print("Press 1 to encrypts your document on Attestable.")
     print("Press 2 to exchange documents Encrypted.")
-    print("Press 3 (Success case) Bob and Alice send a signal positive to PBB.")
+    print("Press 3 select a procotol to sincronization.")
     print("Press 0 to exit of system.")
 
 def open_notepad():

@@ -1,83 +1,85 @@
 import socket
+import os
+
+def load_messages(file_path):
+    if not os.path.exists(file_path):
+        return {}
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    messages = {}
+    for line in lines:
+        client_name, client_hash, message = line.strip().split(',')
+        if client_name not in messages:
+            messages[client_name] = {}
+        if client_hash not in messages[client_name]:
+            messages[client_name][client_hash] = set()
+        messages[client_name][client_hash].add(message)
+    return messages
+
+def save_message(file_path, client_name, client_hash, message):
+    with open(file_path, 'a') as file:
+        file.write(f"{client_name},{client_hash},{message}\n")
 
 def start_server():
-    # Create a socket object
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    # Get local machine name
     host = socket.gethostname()
-
-    # Choose a port that is free
     port = 12345
-
-    # Bind to the port
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # Permite reutilizar o endereço
     server_socket.bind((host, port))
-
-    # Queue up to 5 requests
     server_socket.listen(5)
 
-    # Dictionary to store client messages and sockets
     client_messages = {}
     client_sockets = {}
-
-    # Dictionary to store sent messages
-    sent_messages = {}
+    sent_messages_file = 'sent_messages.txt'
+    sent_messages = load_messages(sent_messages_file)
 
     while True:
-        # Establish a connection
         client_socket, addr = server_socket.accept()
-
         print("Got a connection from %s" % str(addr))
-
-        # Receive data from the client
         data = client_socket.recv(1024)
         client_name, client_hash, message = data.decode().split(',')
 
-        # Check if the client has sent the same message before to the same hash
-        if client_name in sent_messages and client_hash in sent_messages[client_name] and message in \
-                sent_messages[client_name][client_hash]:
-            print(f"The client {client_name} tried to send the same message again to the same hash.")
+        if client_name in sent_messages and client_hash in sent_messages[client_name] and message in sent_messages[client_name][client_hash]:
+            print(f"The ATT {client_name} tried to send the same message again to the same hash.")
             client_socket.close()
             continue
 
-        print(f"Received {message} from the client {client_name} with hash {client_hash}")
+        print(f"The PBB Received the {message} message from {client_name} with token {client_hash}")
 
-        # Add the message to the record of sent messages
         if client_name not in sent_messages:
             sent_messages[client_name] = {}
         if client_hash not in sent_messages[client_name]:
             sent_messages[client_name][client_hash] = set()
         sent_messages[client_name][client_hash].add(message)
+        save_message(sent_messages_file, client_name, client_hash, message)
 
-        # If a client with the same hash has already sent a message
+        # Check if there are more than 2 messages with the same hash
+        all_messages_with_hash = [msg for msgs in sent_messages.values() for hash_msgs in msgs.values() for msg in hash_msgs if client_hash in msgs]
+        if len(all_messages_with_hash) > 2:
+            result = ', '.join(all_messages_with_hash)
+            client_socket.send(result.encode())
+            client_socket.close()
+            continue
+
         if client_hash in client_messages:
-            # Process the messages
             result = process_messages([client_messages[client_hash], (client_name, client_hash, message)])
-
-            # Send the result to both clients
             for socketIt in [client_sockets[client_hash], client_socket]:
                 socketIt.send(result.encode())
                 socketIt.close()
-
-            # Remove the processed messages
             del client_messages[client_hash]
             del client_sockets[client_hash]
         else:
-            # Store the client message and socket for later processing
             client_messages[client_hash] = (client_name, client_hash, message)
             client_sockets[client_hash] = client_socket
-
-
+def stop_server():
+    global running
+    running = False
+    if server_socket:
+        server_socket.close()
+    print("Server stopped.")
 def process_messages(messages):
-    # Implement your message processing logic here
-    # For example, if both messages are 'positive', return 'positive'
-    if all(message[2] == 'Sync' for message in messages):
-        return 'Sync'
-    else:
-        return 'Cancel'
+    result = ', '.join([f" {message[2]}" for message in messages])
+    return result
 
 if __name__ == "__main__":
     start_server()
-
-
-

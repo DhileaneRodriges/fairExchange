@@ -3,9 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-certskeys/
-
-appMolina/certskeys/
+appMolina/
 
 # C extensions
 *.so
