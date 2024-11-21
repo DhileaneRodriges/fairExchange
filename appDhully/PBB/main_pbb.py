@@ -71,12 +71,7 @@ def start_server():
         else:
             client_messages[client_hash] = (client_name, client_hash, message)
             client_sockets[client_hash] = client_socket
-def stop_server():
-    global running
-    running = False
-    if server_socket:
-        server_socket.close()
-    print("Server stopped.")
+
 def process_messages(messages):
     result = ', '.join([f" {message[2]}" for message in messages])
     return result
