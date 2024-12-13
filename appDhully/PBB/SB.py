@@ -36,6 +36,7 @@ def start_client():
             else:
                 acao = "The exchange can be successfully."
             print(f"The PBB responded with: {response}. {acao}")
+            print(f"\n {client_name}'s attestable sends notification of abort to your application")
             break
             #else:
             #    print(f"The PBB responded with: {response}_B/Sync_A The exchange has been aborted")
