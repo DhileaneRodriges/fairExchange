@@ -26,9 +26,9 @@ class SincronizationProcessService:
 
         #############################
         # pbbService.syncB_syncA()
-        pbbService.syncB_cancelB_SyncA()
+        # pbbService.syncB_cancelB_SyncA()
         # pbbService.syncB_cancelA()
-        # pbbService.cancelB_syncA()
+        pbbService.cancelB_syncA()
 
 
     # def menu_cases(self):

@@ -121,13 +121,14 @@ class PBBService():
 
         client_thread = threading.Thread(target=self.upClienteToSendSignalToPBB, args=("Bob", "1233", "Sync_B"))
         client_thread.start()
-        time.sleep(1)
+        #time.sleep(1)
 
         client_thread1 = threading.Thread(target=self.upClienteToSendSignalToPBB, args=("Bob", "1233", "Cancel_B"))
         client_thread1.start()
-        time.sleep(1)
+        #time.sleep(1)
 
         self.upClienteToSendSignalToPBB("Alice", "1233", "Sync_A")
+        time.sleep(1)
 
     def cancelB_syncA(self):
         server_thread = threading.Thread(target=lambda: setattr(self, 'server_socket', self.startPbbServer()),
@@ -137,6 +138,7 @@ class PBBService():
 
         client_thread = threading.Thread(target=self.upClienteToSendSignalToPBB, args=("Bob", "1231", "Cancel_B"))
         client_thread.start()
+        time.sleep(2)
 
         self.upClienteToSendSignalToPBB("Alice", "1231", "Sync_A")
 
